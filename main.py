@@ -87,9 +87,3 @@ if __name__ == "__main__":
 
 ## commandline: python main.py --batch_size 512 --num_epochs 10 --dataset mnist
         
-## commandline output for mnist and linear model:
-    # Accuracy for adam: 0.834;
-    # Accuracy for adam+sgd: 0.788;
-    # Accuracy for fosso: 0.9;
-    # Accuracy for lbfgs: 0.886;
-    # Accuracy for sgd: 0.722;

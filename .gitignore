@@ -1,0 +1,11 @@
+# Ignore all .log files
+*.log
+fosso.py
+# Ignore plot directory
+plots/
+data/
+
+# Ignore file specific to your system
+.DS_Store
+__pycache__
+.vscode

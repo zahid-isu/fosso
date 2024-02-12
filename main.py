@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 # Set up argument parsing
 parser = argparse.ArgumentParser(description="Train models on various datasets.")
-parser.add_argument("--batch_size", type=int, default=1024, help="Input batch size for training (default: 512)")
+parser.add_argument("--batch_size", type=int, default=512, help="Input batch size for training (default: 512)")
 parser.add_argument("--num_epochs", type=int, default=50, help="Number of epochs to train (default: 20)")
 parser.add_argument("--dataset", type=str, default="cifar", choices=["mnist", "cifar", "kmnist", "fashionmnist"], help="Dataset to use (default: mnist)")
 parser.add_argument("--model", type=str, default="dense_net", choices=["cnn", "mlp", "linear_model", "logistic_regression", "dense_net", "resnet20"], help="Choose the raw model to use (default: dense_net)")

@@ -14,6 +14,8 @@ def plotting(
     gradient_dict: typing.Dict[str, typing.List[float]],
     dataset: typing.List[str],
     model: typing.List[str],
+    batch_size: typing.List[str],
+    num_epoch: typing.List[str],
     save_path: str = "./plots" # Define plots path
 ):
     """Plot the loss, accuracy, gradient norm.
@@ -57,8 +59,8 @@ def plotting(
 
 
 
-    fig.suptitle(f"{dataset}_{model}_layer5_ep50", fontsize=16, y=0.99)
+    fig.suptitle(f"{dataset}_{model}_batch{batch_size}_epoch{num_epoch}_lay5", fontsize=16, y=0.99)
     plt.tight_layout(pad=3.0, h_pad=1.0, w_pad=1.0)
-    plt.savefig(os.path.join(save_path, f"{current_time}_{dataset}_{model}_lay10_ep50_batch1024_swep5_plot.png"))
+    plt.savefig(os.path.join(save_path, f"{current_time}_{dataset}_{model}_lay5_ep{num_epoch}_batch{batch_size}_plot.png"))
     plt.close(fig)
 

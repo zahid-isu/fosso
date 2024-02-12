@@ -35,8 +35,11 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    model = model_classes[args.model]()  # Instantiate the model based on args.model
-    model = model.to(device)
+    # Initialize the untrained model 
+    original_model_class = model_classes[args.model]
+    original_model = original_model_class() if not callable(original_model_class) else original_model_class()
+    
+    
     loss_dict, accuracy_dict, gradient_dict = {}, {}, {}
     optims = args.optimizer
 
@@ -46,7 +49,8 @@ if __name__ == "__main__":
     )
     for opt in optims:
         print(f"starting training for {opt} optimizer {len(train_loader)*args.batch_size} train samples...")
-        model = copy.deepcopy(model)
+        model = copy.deepcopy(original_model)
+        model = model.to(device)
 
         # Add the optimizer to the wandb configuration
         # wandb.config.update({
@@ -79,7 +83,9 @@ if __name__ == "__main__":
         accuracy_dict=accuracy_dict,
         gradient_dict=gradient_dict,
         dataset=args.dataset,
-        model=args.model
+        model=args.model,
+        batch_size= args.batch_size,
+        num_epoch=args.num_epochs
     )
     for opt in optims:
         print(f"Accuracy for {opt}: {accuracy_dict[opt][-1]};")

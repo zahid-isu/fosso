@@ -1,9 +1,13 @@
-# Ignore all .log files
+# Ignore all .log/.txt files
 *.log
 fosso.py
+*.txt
+*.sh
 # Ignore plot directory
 plots/
 data/
+fig/
+3d_fig/
 
 # Ignore file specific to your system
 .DS_Store

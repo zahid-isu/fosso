@@ -72,13 +72,19 @@ def run_optimization(
     "sgd": optim.SGD(model.parameters(), lr=learning_rate_sgd),
     "lbfgs": optim.LBFGS(model.parameters(), history_size=10, max_eval=4, line_search_fn="strong_wolfe")
     }
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    if torch.cuda.is_available():
+        device_id = 0  
+        torch.cuda.set_device(device_id)
+        device = torch.device(f"cuda:{device_id}")
+    else:
+        device = torch.device("cpu")
     print(f"Training on device: {device}")
     model.to(device)
 
     for epoch in range(num_epochs):
         total_loss = 0  # total epoch loss
-        num_batches = 0 
+        num_batches = 1
         train_loader_tqdm = tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}", unit="batch", total=len(train_loader))
         for xs, ts in iter(train_loader_tqdm):
             print(f"Processing batch {num_batches+1}")
@@ -115,7 +121,7 @@ def run_optimization(
                 continue
             if not dataset == "cifar":
                 if isinstance(model, ConvolutionalNeuralNet):
-                    s = xs.view(-1, 1, 28, 28)
+                    xs = xs.view(-1, 1, 28, 28)
                 else:
                     # Flatten the image.
                     xs = xs.view(-1, 784)
@@ -141,7 +147,7 @@ def run_optimization(
             train_loader_tqdm.set_postfix(loss=loss.item())
             # losses.append(float(loss)/batch_size)  # avg batch loss
         # Get gradient norm, test acc and avg_epoch_loss
-        average_epoch_loss = total_loss / num_batches 
+        average_epoch_loss = total_loss / num_batches
         losses.append(average_epoch_loss)
         total_norm = calculate_gradient_norm(model.parameters())
         gradient_norm.append(total_norm)

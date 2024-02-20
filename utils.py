@@ -97,3 +97,4 @@ def calculate_gradient_norm(params) -> float: # TODO: need type hint for `params
         total_norm += param_norm.item() ** 2
     total_norm = total_norm ** 0.5
     return total_norm
+    

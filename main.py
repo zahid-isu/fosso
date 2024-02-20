@@ -1,9 +1,9 @@
 import argparse
 import copy
 from data_process import processing_data, DataType
-from models import ConvolutionalNeuralNet, MultilayerPerceptron, LinearModel, LogisticRegression, DenseNet,ResNet20
+from models import ConvolutionalNeuralNet, MultilayerPerceptron, LinearModel, LogisticRegression, DenseNet3,ResNet20
 from optimizer import run_optimization, Optimizer, OptimizationOutput
-from plotting import plotting
+from plotting import plotting, plot_loss_landscape
 import torch
 from tqdm import tqdm
 # import wandb
@@ -17,6 +17,9 @@ parser.add_argument("--dataset", type=str, default="cifar", choices=["mnist", "c
 parser.add_argument("--model", type=str, default="dense_net", choices=["cnn", "mlp", "linear_model", "logistic_regression", "dense_net", "resnet20"], help="Choose the raw model to use (default: dense_net)")
 parser.add_argument("--criterion", type=str, default="epoch", choices=["epoch", "loss", "gradient"], help="Criterion for FOSSO optimizer")
 parser.add_argument("--optimizer", type=str, nargs="*", default=["adam", "adam+sgd", "fosso", "lbfgs", "sgd"], help="Optimizer. Default: all")
+parser.add_argument("--num_layer", type=int, default=5, help="Number of layers in DenseNet")
+parser.add_argument("--train_ratio", type=float, default=1.0, help="ratio of training data to use (default: 1.0)")
+
 
 args = parser.parse_args()
 
@@ -26,29 +29,37 @@ model_classes = {
     "mlp": MultilayerPerceptron,
     "linear_model": LinearModel,
     "logistic_regression": LogisticRegression,
-    "dense_net": lambda: DenseNet(growth_rate=32, num_layers=5, num_classes=10),
+    "dense_net": lambda: DenseNet3(args.num_layer, num_classes=10, growth_rate=32,
+                                   reduction=0.5, bottleneck=False, dropRate=0.0),
     "resnet20":ResNet20
 }
 
 if __name__ == "__main__":
     # wandb.init(project="fosso", entity="zahid13")
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    if torch.cuda.is_available():
+        device_id = 0  
+        torch.cuda.set_device(device_id)
+        device = torch.device(f"cuda:{device_id}")
+    else:
+        device = torch.device("cpu")
     print(f"Using device: {device}")
 
     # Initialize the untrained model 
     original_model_class = model_classes[args.model]
     original_model = original_model_class() if not callable(original_model_class) else original_model_class()
     
-    
+
     loss_dict, accuracy_dict, gradient_dict = {}, {}, {}
     optims = args.optimizer
 
     train_loader, test_loader = processing_data(
         batch_size=args.batch_size,
         dataset=args.dataset,
+        train_data_ratio=args.train_ratio
     )
     for opt in optims:
-        print(f"starting training for {opt} optimizer {len(train_loader)*args.batch_size} train samples...")
+        print(f"{original_model} layer={args.num_layer}starting training for {opt} optimizer {len(train_loader)*args.batch_size} train samples...")
         model = copy.deepcopy(original_model)
         model = model.to(device)
 
@@ -85,8 +96,15 @@ if __name__ == "__main__":
         dataset=args.dataset,
         model=args.model,
         batch_size= args.batch_size,
-        num_epoch=args.num_epochs
+        num_epoch=args.num_epochs,
+        num_layer=args.num_layer,
+        train_data_ratio=args.train_ratio
     )
+
+    plot_loss_landscape(model=model,
+                        model_name=args.model,
+                        train_loader=train_loader)
+    
     for opt in optims:
         print(f"Accuracy for {opt}: {accuracy_dict[opt][-1]};")
 

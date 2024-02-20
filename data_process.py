@@ -36,6 +36,7 @@ DATASET_CONFIG = {
 def processing_data(
     dataset: DataType = "mnist",
     batch_size: int = 512,
+    train_data_ratio: float = 1.0,
     num_workers: int = 2,
 )-> torch.utils.data.DataLoader:
     """Process the input data.
@@ -73,9 +74,9 @@ def processing_data(
         transform=transform,
     )
     # Select a portion of data if MNIST dataset.
-    if dataset == "mnist":
-        train_data_len= 5000
-        test_data_len= 2000
+    if dataset == "cifar":
+        train_data_len= int(len(train_data) * train_data_ratio)
+        test_data_len= int(len(test_data) * train_data_ratio)
         train_data = list(train_data)[:train_data_len]
         test_data = list(test_data)[:test_data_len]
         train_data = [(x, y) for x, y in train_data]

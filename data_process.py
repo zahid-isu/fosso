@@ -9,6 +9,8 @@ DataType = typing.Literal[
     "fashionmnist",
     "kmnist",
     "mnist",
+    "usps",
+    "svhn"
 ]
 #DATASET_CONFIG dictionary
 DATASET_CONFIG = {
@@ -24,6 +26,14 @@ DATASET_CONFIG = {
         "dataset_cls": datasets.FashionMNIST,
         "transform": transforms.ToTensor(),
     },
+    "usps": {
+        "dataset_cls": datasets.USPS,
+        "transform": transforms.ToTensor(),
+    },
+    "svhn": {
+        "dataset_cls": datasets.SVHN,
+        "transform": transforms.ToTensor(),
+    },
     "cifar": {
         "dataset_cls": datasets.CIFAR10,
         "transform": transforms.Compose([
@@ -34,7 +44,7 @@ DATASET_CONFIG = {
 }
 
 def processing_data(
-    dataset: DataType = "mnist",
+    dataset: DataType,
     batch_size: int = 512,
     train_data_ratio: float = 1.0,
     num_workers: int = 2,
@@ -61,26 +71,40 @@ def processing_data(
     dataset_cls = config["dataset_cls"]
     transform = config["transform"]
 
-    train_data = dataset_cls(
-        root="data",
-        train=True,
-        download=True,
-        transform=transform,
-    )
-    test_data = dataset_cls(
-        root="data",
-        train=False,
-        download=True,
-        transform=transform,
-    )
+    if dataset == "svhn":
+        train_data = dataset_cls(
+            root="data",
+            split='train',
+            download=True,
+            transform=transform,
+        )
+        test_data = dataset_cls(
+            root="data",
+            split='test',
+            download=True,
+            transform=transform,
+        )
+    else:
+        train_data = dataset_cls(
+            root="data",
+            train=True,
+            download=True,
+            transform=transform,
+        )
+        test_data = dataset_cls(
+            root="data",
+            train=False,
+            download=True,
+            transform=transform,
+        )
     # Select a portion of data if MNIST dataset.
-    if dataset == "cifar":
-        train_data_len= int(len(train_data) * train_data_ratio)
-        test_data_len= int(len(test_data) * train_data_ratio)
-        train_data = list(train_data)[:train_data_len]
-        test_data = list(test_data)[:test_data_len]
-        train_data = [(x, y) for x, y in train_data]
-        test_data = [(x, y) for x, y in test_data]
+    
+    train_data_len= int(len(train_data) * train_data_ratio)
+    test_data_len= int(len(test_data) * train_data_ratio)
+    train_data = list(train_data)[:train_data_len]
+    test_data = list(test_data)[:test_data_len]
+    train_data = [(x, y) for x, y in train_data]
+    test_data = [(x, y) for x, y in test_data]
         
     # Generate dataloaders.
     train_loader = torch.utils.data.DataLoader(

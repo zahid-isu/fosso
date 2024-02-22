@@ -25,10 +25,10 @@ class ConvolutionalNeuralNet(nn.Module):
     """Convolutional neural network model."""
     def __init__(self):
         super(ConvolutionalNeuralNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5) #for cifar channel=3, for mnist channel=1
+        self.conv1 = nn.Conv2d(1, 6, 5) #for cifar channel=3, for mnist channel=1
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120) # for  cifar (16*5*5, 120), for mnist (16*4*4,120)
+        self.fc1 = nn.Linear(16 * 1* 1, 120) # for cifar (16*5*5), for mnist (16*4*4) for usps(16*1*1)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 

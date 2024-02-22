@@ -23,7 +23,7 @@ def get_accuracy(
     model.eval()
     correct, total = 0, 0
     for xs, ts in dataloader:
-        if not dataset == "cifar":
+        if dataset in ["mnist", "kmnist", "fashionmnist"]:
             if isinstance(model, ConvolutionalNeuralNet):
                 xs = xs.view(-1, 1, 28, 28)
             else:
@@ -65,7 +65,7 @@ def get_avg_epoch_loss(
         if len(ts) != batch_size:
             continue
         # Flatten the image for certain datasets and model types
-        if not dataset == "cifar":
+        if dataset == "mnist":
             if isinstance(model, ConvolutionalNeuralNet):
                 xs = xs.view(-1, 1, 28, 28)
             else:
@@ -97,4 +97,5 @@ def calculate_gradient_norm(params) -> float: # TODO: need type hint for `params
         total_norm += param_norm.item() ** 2
     total_norm = total_norm ** 0.5
     return total_norm
+
     

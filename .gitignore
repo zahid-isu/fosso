@@ -8,6 +8,7 @@ plots/
 data/
 fig/
 3d_fig/
+results/
 
 # Ignore file specific to your system
 .DS_Store

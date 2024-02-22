@@ -63,8 +63,7 @@ def run_optimization(
     criterion = nn.CrossEntropyLoss()
     # training
     model.train()
-    iters, losses, test_acc = [], [], []
-    gradient_norm = []
+    gradient_norm, losses, test_acc = [], [], []
     
     # Define optimizer objects
     optimizers = {
@@ -119,7 +118,7 @@ def run_optimization(
                     optimizer = optimizers["adam"]
             if len(ts) != batch_size:
                 continue
-            if not dataset == "cifar":
+            if dataset in ["mnist", "kmnist", "fashionmnist"]:
                 if isinstance(model, ConvolutionalNeuralNet):
                     xs = xs.view(-1, 1, 28, 28)
                 else:

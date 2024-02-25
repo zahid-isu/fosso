@@ -79,33 +79,33 @@ def plotting(
 
     # Define plot characteristics in a list
     plot_specs = [
-        ('Training Loss', 'Epochs', 'Loss', loss_dict),
-        ('Testing Accuracy', 'Epochs', 'Accuracy', accuracy_dict),
-        ('Gradient Norm', 'Epochs', 'Gradient Norm', gradient_dict)
+        ('Training Loss vs. Epochs', 'Epochs', 'Training Loss', loss_dict),
+        ('Testing Accuracy vs. Epochs', 'Epochs', 'Testing Accuracy', accuracy_dict),
+        # ('Gradient Norm', 'Epochs', 'Gradient Norm', gradient_dict)
     ]
 
     # Create subplots
-    fig, axes = plt.subplots(1, 3, figsize=(20, 8), dpi=300)
+    fig, axes = plt.subplots(1, 2, figsize=(15, 8), dpi=600)
     model_dir = os.path.join(save_path, f"{model}")
     os.makedirs(model_dir, exist_ok=True)
 
 
     # Loop over each subplot specification
     for ax, (title, xlabel, ylabel, data_dict) in zip(axes, plot_specs):
-        ax.set_title(title)
+        # ax.set_title(title)
         for opt in optims:
             epochs = np.arange(1, len(data_dict[opt]) + 1) 
-            ax.plot(epochs, data_dict[opt], label=f'{opt}', linewidth=2.5)
-        ax.tick_params(axis='x', labelsize=14)  
-        ax.tick_params(axis='y', labelsize=14) 
-        ax.set_xlabel(xlabel, fontsize=14) 
-        ax.set_ylabel(ylabel, fontsize=14)  
-        ax.set_title(title, fontsize=16)
-        ax.legend(loc='best', fontsize=12)
+            ax.plot(epochs, data_dict[opt], label=f'{opt}', linewidth=3.5)
+        ax.tick_params(axis='x', labelsize=20)  
+        ax.tick_params(axis='y', labelsize=20) 
+        ax.set_xlabel(xlabel, fontsize=20) 
+        ax.set_ylabel(ylabel, fontsize=20)  
+        # ax.set_title(title, fontsize=20)
+        ax.legend(loc='best', fontsize=18)
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
 
     # fig.suptitle(f"{dataset}_{model}_batch{batch_size}_epoch{num_epoch}_lay{num_layer}", fontsize=18, y=0.99)
     plt.tight_layout()
-    plt.savefig(os.path.join(model_dir, f"{current_time}_{dataset}_ratio{train_data_ratio}_{model}_batch{batch_size}_plot.png"))
+    plt.savefig(os.path.join(model_dir, f"{current_time}_{dataset}_ratio{train_data_ratio}_{model}_batch{batch_size}_plot.pdf"))
     plt.close(fig)

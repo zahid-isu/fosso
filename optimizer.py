@@ -84,9 +84,9 @@ def run_optimization(
     for epoch in range(num_epochs):
         total_loss = 0  # total epoch loss
         num_batches = 1
-        train_loader_tqdm = tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}", unit="batch", total=len(train_loader))
-        for xs, ts in iter(train_loader_tqdm):
-            print(f"Processing batch {num_batches+1}")
+        # train_loader_tqdm = tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}", unit="batch", total=len(train_loader))
+        for xs, ts in iter(train_loader):
+            # print(f"Processing batch {num_batches+1}")
             xs, ts = xs.to(device), ts.to(device) 
             if opt in ["adam", "sgd", "lbfgs"]:
                 optimizer = optimizers[opt]
@@ -143,7 +143,7 @@ def run_optimization(
             # Tconverted to average epoch loss. Will reduce curve variance.
             total_loss += float(loss.item()) # sum the loss for current epoch
             num_batches += 1
-            train_loader_tqdm.set_postfix(loss=loss.item())
+            # train_loader_tqdm.set_postfix(loss=loss.item())
             # losses.append(float(loss)/batch_size)  # avg batch loss
         # Get gradient norm, test acc and avg_epoch_loss
         average_epoch_loss = total_loss / num_batches
@@ -151,7 +151,7 @@ def run_optimization(
         total_norm = calculate_gradient_norm(model.parameters())
         gradient_norm.append(total_norm)
         test_acc.append(get_accuracy(model, test_loader, dataset, device)) 
-        print(f"Epoch {epoch + 1} average epoch_loss: {average_epoch_loss}") 
-        train_loader_tqdm.close()
+        # print(f"Epoch {epoch + 1} average epoch_loss: {average_epoch_loss}") 
+        # train_loader_tqdm.close()
     out = (losses, test_acc, gradient_norm)
     return out

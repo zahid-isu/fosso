@@ -33,7 +33,9 @@ def get_accuracy(
         pred = zs.max(1, keepdim=True)[1] # get the index of the max logit
         correct += pred.eq(ts.view_as(pred)).sum().item()
         total += int(ts.shape[0])
-        return correct / total
+        accuracy = correct / total
+        return round(accuracy, 5)
+        # return correct / total
 
 def get_avg_epoch_loss(
     model: ModelType,

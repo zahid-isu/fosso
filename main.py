@@ -117,6 +117,7 @@ if __name__ == "__main__":
         # collect the final accuracies for each optim
         for opt in optims:
             acc[opt].append(accuracy_dict[opt][-1])
+            print(f"For seed {seed} final acc {opt}:", accuracy_dict[opt][-1])
     
     #create the csv to store results
     results = []
@@ -124,13 +125,14 @@ if __name__ == "__main__":
         mean_acc = np.mean(acc[opt])
         var_acc = np.var(acc[opt])
         results.append([opt, mean_acc, var_acc])
+        print("Results: ", results)
     
-    df = pd.DataFrame(results, columns=["Optimizer", "Mean Accuracy", "Variance"])
-    csv_path = os.path.join("results", f"{args.model}_optimizer_acc_{args.dataset}_{args.train_ratio}.csv")
-    os.makedirs(os.path.dirname(csv_path), exist_ok=True)
-    df.to_csv(csv_path, index=False)
+    # df = pd.DataFrame(results, columns=["Optimizer", "Mean Accuracy", "Variance"])
+    # csv_path = os.path.join("results", f"{args.model}_optimizer_acc_{args.dataset}_{args.train_ratio}.csv")
+    # os.makedirs(os.path.dirname(csv_path), exist_ok=True)
+    # df.to_csv(csv_path, index=False)
 
-    print("Results saved to:", csv_path)
+    # print("Results saved to:", csv_path)
 
 
 
